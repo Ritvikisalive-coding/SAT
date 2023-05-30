@@ -5,10 +5,12 @@ from PIL import ImageTk
 from PIL import Image
 import webbrowser
 from tkinter import *
+from tkinter import ttk
+from tkinter import filedialog#For file explorer
 
 ctk.set_appearance_mode("Light")
 ctk.set_default_color_theme("green")
-
+ctk.deactivate_automatic_dpi_awareness()
 
 def callback(url):
     webbrowser.open_new(url)
@@ -233,8 +235,29 @@ def parent_booking_screen(wins):
 def teacher_booked_screen(wint):
     wint.destroy()
     winbooked = ctk.CTk()
+    winbooked.resizable(0,0)
     winbooked.iconbitmap('Images/logo.ico')
-    winbooked.title("PST - Teacher Bookings")
+    winbooked.geometry("815x240")
+    sidebar = ctk.CTkFrame(winbooked,width=200, height=400 )
+    sidebar.place(x=620,y=-4)
+    def file1():
+        file = filedialog.asksaveasfile(initialdir="Desktop",initialfile="PSTbookings.csv",defaultextension=".csv",filetypes = [("Excel Files", "*.xls *.csv")])
+        insidefile = open("csv/teacherallbooking.csv")
+        text=insidefile.read()
+        file.write(text)
+        file.close
+
+    downloadbtn = ctk.CTkButton(sidebar, text="   Download", font=("Arial",14,"bold"),command=file1)
+    downloadbtn.place(x=30,y=80)
+    symbollbl = ctk.CTkLabel(sidebar,text="⇩",bg_color="#2cc985",text_color="white",font=("Arial",20))
+    symbollbl.place(x=58,y=80)
+    treeviewbookings = ttk.Treeview(winbooked,columns=("student_name","booking_time","subject"),show="headings")
+    treeviewbookings.heading("student_name",text="Student Name")
+    treeviewbookings.heading("booking_time",text="Time Booked")
+    treeviewbookings.heading("subject",text="Subject")
+
+    treeviewbookings.place(x=5,y=5)
+
     winbooked.mainloop()
 
 
