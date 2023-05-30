@@ -1,8 +1,10 @@
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 import csv
-from PIL import ImageTk, Image
+from PIL import ImageTk
+from PIL import Image
 import webbrowser
+from tkinter import *
 
 ctk.set_appearance_mode("Light")
 ctk.set_default_color_theme("green")
@@ -13,12 +15,12 @@ def callback(url):
 
 
 
-
 def chose_login():
 
     win = ctk.CTk()
     win.geometry("300x180")
     win.title("PST Log In")
+    win.iconbitmap('Images/logo.ico')
     win.resizable(0,0)
     def themed():
         if themeswitch.get() == 1:
@@ -52,6 +54,7 @@ def student_sign_in(win):
     wins = ctk.CTk()
     wins.geometry("300x300")
     wins.title("PST Log In - Parent / Student")
+    wins.iconbitmap('Images/logo.ico')
     wins.resizable(0,0)
     themeswitch = ctk.CTkSwitch(wins,text="☀️",command=themed)
     themeswitch.place(x=5,y=5)
@@ -106,6 +109,7 @@ def student_sign_in(win):
 
     passw = ctk.CTkEntry(wins, show="*", placeholder_text="********")
     passw.place(x=65, y=120)
+    passw.bind("<Return>", lambda e: parent_booking_screen(wins))
 
     showpas = ctk.CTkCheckBox(wins,text="Show password", command=show_pass)
     showpas.place(x=50,y=155)
@@ -134,6 +138,7 @@ def teacher_sign_in(win):
     wint = ctk.CTk()
     wint.geometry("300x300")
     wint.title("PST Log In - Teacher")
+    wint.iconbitmap('Images/logo.ico')
     wint.resizable(0,0)
     themeswitch = ctk.CTkSwitch(wint,text="☀️",command=themed)
     themeswitch.place(x=5,y=5)
@@ -188,6 +193,7 @@ def teacher_sign_in(win):
 
     passw = ctk.CTkEntry(wint, show="*")
     passw.place(x=40, y=120)
+    passw.bind("<Return>", lambda e: teacher_booked_screen(wint))
 
     showpas = ctk.CTkCheckBox(wint,text="Show password", command=show_pass)
     showpas.place(x=50,y=155)
@@ -206,6 +212,7 @@ def teacher_sign_in(win):
 def parent_booking_screen(wins):
     wins.destroy()
     winbooking = ctk.CTk()
+    winbooking.iconbitmap('Images/logo.ico')
     winbooking.title("PST Parent Booking")
     winbooking.geometry("600x400")
     def combobox_callback(choice):
@@ -215,20 +222,20 @@ def parent_booking_screen(wins):
             CTkMessagebox(title='The Bookings of GWSC', message= f'You should remember your bookings not make me tell you')
         else:
             CTkMessagebox(title='You are already on your account', message= f'Account already opened')
-    combobox = ctk.CTkComboBox(winbooking, values=["NAME", "BOOKINGS","CHILDREN"],command=combobox_callback,state="readonly")
+    combobox = ctk.CTkOptionMenu(winbooking, values=["NAME", "BOOKINGS","CHILDREN"],command=combobox_callback,state="readonly")
     combobox.set("NAME")
     combobox.place(x=460,y=5)
 
 
 
-
-
-
-
-
-
     winbooking.mainloop()
 
+def teacher_booked_screen(wint):
+    wint.destroy()
+    winbooked = ctk.CTk()
+    winbooked.iconbitmap('Images/logo.ico')
+    winbooked.title("PST - Teacher Bookings")
+    winbooked.mainloop()
 
 
 
