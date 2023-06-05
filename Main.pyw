@@ -7,6 +7,11 @@ import webbrowser
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog#For file explorer
+from winotify import Notification, audio
+import time
+from win10toast import ToastNotifier
+from plyer import notification
+from tkinter.messagebox import showinfo
 
 ctk.set_appearance_mode("Light")
 ctk.set_default_color_theme("green")
@@ -80,12 +85,8 @@ def student_sign_in(win):
         pasw = passw.get()
 
         if userpass.get(user) == pasw:
-            print(username.get()+" "+ user)
-            print(user+" "+pasw)
-            CTkMessagebox(title='Log in successful', message= f'Hello {user}')
+            parent_booking_screen(wins)
         else:
-            print(username.get()+" "+ user)
-            print(user+" "+pasw)
             CTkMessagebox(title='Log In Error', message= 'Incorrect Username or Password', icon="cancel")
 
 
@@ -111,7 +112,7 @@ def student_sign_in(win):
 
     passw = ctk.CTkEntry(wins, show="*", placeholder_text="********")
     passw.place(x=65, y=120)
-    passw.bind("<Return>", lambda e: parent_booking_screen(wins))
+    passw.bind("<Return>", lambda: clicked())
 
     showpas = ctk.CTkCheckBox(wins,text="Show password", command=show_pass)
     showpas.place(x=50,y=155)
@@ -164,12 +165,9 @@ def teacher_sign_in(win):
         pasw = passw.get()
 
         if userpass.get(user) == pasw:
-            print(username.get()+" "+ user)
-            print(user+" "+pasw)
-            CTkMessagebox(title='Log in successful', message= f'Hello {user}')
+            print("User found")
+            teacher_booked_screen(wint)
         else:
-            print(username.get()+" "+ user)
-            print(user+" "+pasw)
             CTkMessagebox(title='Log In Error', message= 'Incorrect Username or Password', icon="cancel")
 
 
@@ -195,7 +193,7 @@ def teacher_sign_in(win):
 
     passw = ctk.CTkEntry(wint, show="*")
     passw.place(x=40, y=120)
-    passw.bind("<Return>", lambda e: teacher_booked_screen(wint))
+    passw.bind("<Return>", lambda e: clicked())
 
     showpas = ctk.CTkCheckBox(wint,text="Show password", command=show_pass)
     showpas.place(x=50,y=155)
@@ -236,165 +234,68 @@ def teacher_booked_screen(wint):
     wint.destroy()
     winbooked = ctk.CTk()
     winbooked.resizable(0,0)
+    winbooked.title("All bookings")
     winbooked.iconbitmap('Images/logo.ico')
     winbooked.geometry("815x240")
     sidebar = ctk.CTkFrame(winbooked,width=200, height=400 )
-    sidebar.place(x=620,y=-4)
+    sidebar.place(x=624,y=-4)
     def file1():
         file = filedialog.asksaveasfile(initialdir="Desktop",initialfile="PSTbookings.csv",defaultextension=".csv",filetypes = [("Excel Files", "*.xls *.csv")])
         insidefile = open("csv/teacherallbooking.csv")
         text=insidefile.read()
         file.write(text)
         file.close
+        toast = Notification(app_id="GWSC PST Booking System", title="Download", msg="Your booking confirmation has finished downloading",duration="short")
+        toast.set_audio(audio.Default ,loop=False)
+        toast.show()
+        
 
-    downloadbtn = ctk.CTkButton(sidebar, text="   Download", font=("Arial",14,"bold"),command=file1)
-    downloadbtn.place(x=30,y=80)
-    symbollbl = ctk.CTkLabel(sidebar,text="⇩",bg_color="#2cc985",text_color="white",font=("Arial",20))
-    symbollbl.place(x=58,y=80)
+    downloadbtn = ctk.CTkButton(sidebar, text="   Download", font=("Arial",25,"bold"),command=file1)
+    downloadbtn.place(x=20,y=80)
+    symbollbl = ctk.CTkLabel(sidebar,text="⇩",bg_color="#2cc985",text_color="white",font=("Arial",32))
+    symbollbl.place(x=27,y=80)
     treeviewbookings = ttk.Treeview(winbooked,columns=("student_name","booking_time","subject"),show="headings")
     treeviewbookings.heading("student_name",text="Student Name")
     treeviewbookings.heading("booking_time",text="Time Booked")
     treeviewbookings.heading("subject",text="Subject")
-
     treeviewbookings.place(x=5,y=5)
+    ctk_textbox_scrollbar = ctk.CTkScrollbar(winbooked, command=treeviewbookings.yview)
+    ctk_textbox_scrollbar.place(x=608,y=25)
 
+# connect textbox scroll event to CTk scrollbar
+    treeviewbookings.configure(yscrollcommand=ctk_textbox_scrollbar.set)
+    #insidefile = open("csv/teacherallbooking.csv")
+    #text=insidefile.read()
+    #text = text.split("\n")
+    contacts = []
+    #contacts.append((text))
+    #print(contacts)
+
+    with open("csv/teacherallbooking.csv") as f:
+        reader = csv.reader(f)
+        for row in reader:
+            contacts.append(row)        
+    print (contacts)
+
+
+    
+
+# add data to the treeview
+    for i in range(len(contacts)):
+        print(i)
+        sname = contacts[i][0]
+        stime = contacts[i][1]
+        ssubject = contacts[i][2]        
+        treeviewbookings.insert('', END, values=(sname, stime, ssubject))
+    def item_selected(event):
+        for selected_item in treeviewbookings.selection():
+            item = treeviewbookings.item(selected_item)
+            record = item['values']
+            # show a message
+            showinfo(title='Information', message=','.join(record))
+
+
+    treeviewbookings.bind('<<TreeviewSelect>>', item_selected)
     winbooked.mainloop()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 chose_login()
