@@ -271,26 +271,43 @@ def teacher_booked_screen(wint):
     #contacts.append((text))
     #print(contacts)
 
-    with open("csv/teacherallbooking.csv") as f:
-        reader = csv.reader(f)
+    data = []
+    with open("csv/teacherallbooking.csv") as csvfile:
+        reader = csv.reader(csvfile)
         for row in reader:
-            contacts.append(row)        
-    print (contacts)
+            data.append(row)
 
+    def selectionSort(data, size):
+   
+        for step in range(size):
+            min_idx = step
 
+            for i in range(step + 1, size):
+            
+                # to sort in descending order, change > to < in this line
+                # select the minimum element in each loop
+                if data[i][1] < data[min_idx][1]:
+                    min_idx = i
+            
+            # put min at the correct position
+            (data[step], data[min_idx]) = (data[min_idx], data[step])
+    size = len(data)
+    selectionSort(data, size)
+    print(data)
     
 
 # add data to the treeview
-    for i in range(len(contacts)):
+    for i in range(len(data)):
         print(i)
-        sname = contacts[i][0]
-        stime = contacts[i][1]
-        ssubject = contacts[i][2]        
+        sname = data[i][0]
+        stime = data[i][1]
+        ssubject = data[i][2]        
         treeviewbookings.insert('', END, values=(sname, stime, ssubject))
     def item_selected(event):
         for selected_item in treeviewbookings.selection():
             item = treeviewbookings.item(selected_item)
             record = item['values']
+            record = str(record)
             # show a message
             showinfo(title='Information', message=','.join(record))
 
