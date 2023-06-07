@@ -19,5 +19,5 @@ The  project is a PST booking system (PST stands for Parent Student Teacher Conf
 `<Insert GIF here>`
 
 
-###### How to install the software
+##### How to install the software
 to install the software go to the [Releases](https://github.com/Ritvikisalive-coding/SAT/releases) tab 
