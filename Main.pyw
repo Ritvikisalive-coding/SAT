@@ -12,6 +12,7 @@ import time
 from win10toast import ToastNotifier
 from plyer import notification
 from tkinter.messagebox import showinfo
+from datetime import datetime
 
 ctk.set_appearance_mode("Light")
 ctk.set_default_color_theme("green")
@@ -301,15 +302,17 @@ def teacher_booked_screen(wint):
         print(i)
         sname = data[i][0]
         stime = data[i][1]
-        ssubject = data[i][2]        
-        treeviewbookings.insert('', END, values=(sname, stime, ssubject))
+        ssubject = data[i][2]  
+        dateTime = datetime.strptime(stime, '%H:%M')
+        timein12 = dateTime.strftime('%I:%M %p').lstrip('0')      
+        treeviewbookings.insert('', END, values=(sname, timein12, ssubject))
     def item_selected(event):
         for selected_item in treeviewbookings.selection():
             item = treeviewbookings.item(selected_item)
             record = item['values']
-            record = str(record)
+            record = record
             # show a message
-            showinfo(title='Information', message=','.join(record))
+            showinfo(title='Information', message=', '.join(record))
 
 
     treeviewbookings.bind('<<TreeviewSelect>>', item_selected)

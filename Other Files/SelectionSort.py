@@ -67,6 +67,7 @@ def selectionSort(data, size):
         # put min at the correct position
         (data[step], data[min_idx]) = (data[min_idx], data[step])
 
+
 size = len(data)
 selectionSort(data, size)
 print('Sorted Array in Ascending Order:')
