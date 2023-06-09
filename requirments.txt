@@ -1,0 +1,10 @@
+#pip install -r requirments.txt
+
+customtkinter
+csv
+tkinter
+CTkMessagebox
+PIL
+webbrowser
+winotify
+datetime

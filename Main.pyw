@@ -166,7 +166,6 @@ def teacher_sign_in(win):
         pasw = passw.get()
 
         if userpass.get(user) == pasw:
-            print("User found")
             teacher_booked_screen(wint)
         else:
             CTkMessagebox(title='Log In Error', message= 'Incorrect Username or Password', icon="cancel")
@@ -294,12 +293,10 @@ def teacher_booked_screen(wint):
             (data[step], data[min_idx]) = (data[min_idx], data[step])
     size = len(data)
     selectionSort(data, size)
-    print(data)
     
 
 # add data to the treeview
     for i in range(len(data)):
-        print(i)
         sname = data[i][0]
         stime = data[i][1]
         ssubject = data[i][2]  
@@ -311,7 +308,6 @@ def teacher_booked_screen(wint):
             item = treeviewbookings.item(selected_item)
             record = item['values']
             record = record
-            # show a message
             showinfo(title='Information', message=', '.join(record))
 
 
