@@ -1,21 +1,22 @@
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 import csv
-from PIL import ImageTk
-from PIL import Image
 import webbrowser
 from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog#For file explorer
+from PIL import ImageTk
+from PIL import Image
 from winotify import Notification, audio
 import time
 from win10toast import ToastNotifier
 from plyer import notification
 from tkinter.messagebox import showinfo
 from datetime import datetime
+import PIL.Image
 
 ctk.set_appearance_mode("Light")
-ctk.set_default_color_theme("green")
+ctk.set_default_color_theme("blue")
 ctk.deactivate_automatic_dpi_awareness()
 
 def callback(url):
@@ -26,8 +27,9 @@ def callback(url):
 def chose_login():
 
     win = ctk.CTk()
-    win.geometry("300x180")
+    win.geometry("480x500")
     win.title("PST Log In")
+    #win.eval('tk::PlaceWindow . center')
     win.iconbitmap('Images/logo.ico')
     win.resizable(0,0)
     def themed():
@@ -40,13 +42,18 @@ def chose_login():
     themeswitch = ctk.CTkSwitch(win,text="☀️",command=themed)
     themeswitch.place(x=5,y=5)
 
-    student = ctk.CTkButton(win, text="Student / Parent", font=("Straight",12),command=lambda:student_sign_in(win))
-    teacher = ctk.CTkButton(win, text="Teacher", font=("Straight",12),command=lambda:teacher_sign_in(win))
-    student.place(x=85,y=85)
-    teacher.place(x=85,y=120)
-    Label = ctk.CTkLabel(win, text="PST Log In", font=("Homework",40))
-    Label.place(x=70,y=30)
+    background = ctk.CTkCanvas(win)
+    background.pack(expand=YES, fill=BOTH)
 
+
+    img = PhotoImage(file='Images/choose_login.png')
+
+    background.create_image(-4,-2, image=img, anchor=NW)
+
+    student = ctk.CTkButton(win, text="Parent ", font=("Straight",20),command=lambda:student_sign_in(win))
+    teacher = ctk.CTkButton(win, text="Teacher", font=("Straight",20),command=lambda:teacher_sign_in(win))
+    student.place(x=85,y=380)
+    teacher.place(x=250,y=380)
     win.mainloop()
 
 userpass = {}
@@ -60,8 +67,8 @@ def student_sign_in(win):
             ctk.set_appearance_mode("Light")
             themeswitch.configure(text="☀️")
     wins = ctk.CTk()
-    wins.geometry("300x300")
-    wins.title("PST Log In - Parent / Student")
+    wins.geometry("480x700")
+    wins.title("PST Log In - Parent")
     wins.iconbitmap('Images/logo.ico')
     wins.resizable(0,0)
     themeswitch = ctk.CTkSwitch(wins,text="☀️",command=themed)
@@ -99,33 +106,42 @@ def student_sign_in(win):
             passw.configure(show='*')
 
 
-    lbl = ctk.CTkLabel(wins, text="Log in", font=("Homework",40))
-    lbl.place(x=100,y=2)
+    background = ctk.CTkCanvas(wins)
+    background.pack(expand=YES, fill=BOTH)
 
-    usernamelbl = ctk.CTkLabel(wins,text="Username", font=("Straight",12))
-    usernamelbl.place(x=120,y=50)
 
-    username= ctk.CTkEntry(wins, placeholder_text="AAA000", font=("Straight",12))
-    username.place(x=65, y=70)
+    img = PhotoImage(file='Images/login.png')
 
-    passwordlbl = ctk.CTkLabel(wins, text="Password", font=("Straight",12))
-    passwordlbl.place(x=120,y=100)
+    background.create_image(-4,-2, image=img, anchor=NW)
 
-    passw = ctk.CTkEntry(wins, show="*", placeholder_text="********")
-    passw.place(x=65, y=120)
-    passw.bind("<Return>", lambda: clicked())
+    username = ctk.CTkEntry(wins,height=65,width=400,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Username")
+    username.place(x=45,y=385)
 
-    showpas = ctk.CTkCheckBox(wins,text="Show password", command=show_pass)
-    showpas.place(x=50,y=155)
+    passw = ctk.CTkEntry(wins,height=65,width=364,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Password",show="*")
+    passw.place(x=45,y=518)
+    passw.bind("<Return>", lambda e: clicked())
+    def show_pass():
+        if passw.cget('show') == '*':
+            passw.configure(show='')
+            showpas.configure(image=open_eye)
+        else:
+            passw.configure(show='*')
+            showpas.configure(image=closed_eye)
+    open_eye = ctk.CTkImage(Image.open("Images/show_eye.png"))
+    closed_eye = ctk.CTkImage(Image.open("Images/hide_eye.png"))
+    
+    signin = ctk.CTkButton(wins, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
+    signin.place(x=45,y=600)
+    showpas = ctk.CTkButton(master=wins,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
+    showpas.place(x=410,y=518)
 
     
 
-    link = ctk.CTkLabel(wins, text="Contact School",text_color="blue", font= ('Arial',12,"underline"), cursor="hand2")
-    link.place(x=50,y=220)
+    link = ctk.CTkLabel(wins, text="Contact School",text_color="blue", font= ('Arial',15,"underline"), cursor="hand2",bg_color="white",fg_color="white")
+    link.place(x=50,y=645)
     link.bind("<Button-1>", lambda e: callback("https://www.gwsc.vic.edu.au/page/186/Contact-Us"))
 
-    Login = ctk.CTkButton(wins,text="LOGIN", width=12, command=lambda:parent_booking_screen(wins))
-    Login.place(x=100 ,y=190)
+
 
 
 
@@ -140,7 +156,7 @@ def teacher_sign_in(win):
             ctk.set_appearance_mode("Light")
             themeswitch.configure(text="☀️")
     wint = ctk.CTk()
-    wint.geometry("300x300")
+    wint.geometry("480x700")
     wint.title("PST Log In - Teacher")
     wint.iconbitmap('Images/logo.ico')
     wint.resizable(0,0)
@@ -179,31 +195,47 @@ def teacher_sign_in(win):
             passw.configure(show='*')
 
 
-    lbl = ctk.CTkLabel(wint, text="Log in", font=("Homework",40))
-    lbl.place(x=100,y=2)
+    def show_pass():
+        if passw.cget('show') == '*':
+            passw.configure(show='')
+        else:
+            passw.configure(show='*')
 
-    usernamelbl = ctk.CTkLabel(wint,text="Username")
-    usernamelbl.place(x=120,y=50)
 
-    username= ctk.CTkEntry(wint)
-    username.place(x=40, y=70)
+    background = ctk.CTkCanvas(wint)
+    background.pack(expand=YES, fill=BOTH)
 
-    passwordlbl = ctk.CTkLabel(wint, text="Password")
-    passwordlbl.place(x=120,y=100)
 
-    passw = ctk.CTkEntry(wint, show="*")
-    passw.place(x=40, y=120)
+    img = PhotoImage(file='Images/login.png')
+
+    background.create_image(-4,-2, image=img, anchor=NW)
+
+    username = ctk.CTkEntry(wint,height=65,width=400,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Username")
+    username.place(x=45,y=385)
+
+    passw = ctk.CTkEntry(wint,height=65,width=364,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Password",show="*")
+    passw.place(x=45,y=518)
     passw.bind("<Return>", lambda e: clicked())
+    def show_pass():
+        if passw.cget('show') == '*':
+            passw.configure(show='')
+            showpas.configure(image=open_eye)
+        else:
+            passw.configure(show='*')
+            showpas.configure(image=closed_eye)
+    open_eye = ctk.CTkImage(Image.open("Images/show_eye.png"))
+    closed_eye = ctk.CTkImage(Image.open("Images/hide_eye.png"))
+    
+    signin = ctk.CTkButton(wint, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
+    signin.place(x=45,y=600)
+    showpas = ctk.CTkButton(master=wint,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
+    showpas.place(x=410,y=518)
 
-    showpas = ctk.CTkCheckBox(wint,text="Show password", command=show_pass)
-    showpas.place(x=50,y=155)
+    
 
-    link = ctk.CTkLabel(wint, text="Contact School",text_color="blue", font= ('Arial',15,"underline"), cursor="hand2")
-    link.place(x=50,y=220)
+    link = ctk.CTkLabel(wint, text="Contact School",text_color="blue", font= ('Arial',15,"underline"), cursor="hand2",bg_color="white",fg_color="white")
+    link.place(x=50,y=645)
     link.bind("<Button-1>", lambda e: callback("https://www.gwsc.vic.edu.au/page/186/Contact-Us"))
-
-    Login = ctk.CTkButton(wint,text="LOGIN", width=12, command=clicked)
-    Login.place(x=100 ,y=190)
 
 
 
@@ -252,7 +284,7 @@ def teacher_booked_screen(wint):
 
     downloadbtn = ctk.CTkButton(sidebar, text="   Download", font=("Arial",25,"bold"),command=file1)
     downloadbtn.place(x=20,y=80)
-    symbollbl = ctk.CTkLabel(sidebar,text="⇩",bg_color="#2cc985",text_color="white",font=("Arial",32))
+    symbollbl = ctk.CTkLabel(sidebar,text="⇩",bg_color="#3b8ed0",text_color="white",font=("Arial",32))
     symbollbl.place(x=27,y=80)
     treeviewbookings = ttk.Treeview(winbooked,columns=("student_name","booking_time","subject"),show="headings")
     treeviewbookings.heading("student_name",text="Student Name")
