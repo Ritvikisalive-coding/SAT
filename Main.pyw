@@ -83,6 +83,12 @@ def chose_login():
 #userpass is a dictionary that is defined but is empty at this stage as it is used latter during the linear search
 userpass = {}
 
+def chose_login2():
+    studentsigninframe.forget()
+    chose_login()
+def chose_login3():
+    teachersigninframe.forget()
+    chose_login()
 #Sign in for students/ Parents after they select the Parent button on the selection window
 def student_sign_in():
 
@@ -141,7 +147,11 @@ def student_sign_in():
             showpas.configure(image=closed_eye)
     open_eye = ctk.CTkImage(Image.open("Images/show_eye.png"))
     closed_eye = ctk.CTkImage(Image.open("Images/hide_eye.png"))
-    
+    backbtnicon = Image.open("Images/back.png")
+    backbtnicon = backbtnicon.resize((40,40),Image.ANTIALIAS)
+    backbtnicon= ImageTk.PhotoImage(backbtnicon)
+    chosescreenbtn = ctk.CTkButton(studentsigninframe,image=backbtnicon,text="",fg_color="white",bg_color="white",hover_color="white",width=50,font=("Arial",20),command=chose_login2)
+    chosescreenbtn.place(x=2,y=2)    
     signin = ctk.CTkButton(studentsigninframe, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
     signin.place(x=41,y=570)
     showpas = ctk.CTkButton(master=studentsigninframe,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
@@ -220,7 +230,11 @@ def teacher_sign_in():
             showpas.configure(image=closed_eye)
     open_eye = ctk.CTkImage(Image.open("Images/show_eye.png"))
     closed_eye = ctk.CTkImage(Image.open("Images/hide_eye.png"))
-    
+    backbtnicon = Image.open("Images/back.png")
+    backbtnicon = backbtnicon.resize((40,40),Image.ANTIALIAS)
+    backbtnicon= ImageTk.PhotoImage(backbtnicon)
+    chosescreenbtn = ctk.CTkButton(teachersigninframe,image=backbtnicon,text="",fg_color="white",bg_color="white",hover_color="white",width=50,font=("Arial",20),command=chose_login3)
+    chosescreenbtn.place(x=2,y=2)
     signin = ctk.CTkButton(teachersigninframe, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
     signin.place(x=41,y=570)
     showpas = ctk.CTkButton(master=teachersigninframe,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
@@ -232,7 +246,9 @@ def teacher_sign_in():
     link.place(x=50,y=645)
     link.bind("<Button-1>", lambda e: callback("https://www.gwsc.vic.edu.au/page/186/Contact-Us"))
 
-
+def exitparentview():
+    parentbookingframe.forget()
+    student_sign_in()
 
 
 def parent_booking_screen():
@@ -245,7 +261,7 @@ def parent_booking_screen():
         elif choice == "BOOKINGS":
             CTkMessagebox(title='The Bookings of GWSC', message= f'You should remember your bookings not make me tell you')
         elif choice == "LOG OUT":
-            student_sign_in()
+            exitparentview()
         elif choice == "EXIT":
             rootwindow.destroy()
         else:
@@ -254,7 +270,9 @@ def parent_booking_screen():
     combobox.set("NAME")
     combobox.place(x=460,y=5)
     
-
+def exitteacherview():
+    teacherbookedframe.forget()
+    teacher_sign_in()
 
 
 def teacher_booked_screen():
@@ -288,7 +306,7 @@ def teacher_booked_screen():
     ctk_textbox_scrollbar = ctk.CTkScrollbar(teacherbookedframe, command=treeviewbookings.yview)
     ctk_textbox_scrollbar.place(x=608,y=25)
     logouticon = ctk.CTkImage(Image.open("Images/logout.png"))
-    logoutbtn = ctk.CTkButton(sidebar, text="Logout",image=logouticon,fg_color="red",hover_color="red",cursor="hand2",command=lambda: teacher_sign_in())
+    logoutbtn = ctk.CTkButton(sidebar, text="Logout",image=logouticon,fg_color="red",hover_color="red",cursor="hand2",command=exitteacherview)
     logoutbtn.place(x=45,y=210)
 
 # connect textbox scroll event to CTk scrollbar
