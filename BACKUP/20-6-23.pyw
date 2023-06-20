@@ -7,7 +7,6 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import filedialog
 from PIL import Image
-from PIL import ImageTk
 from winotify import Notification, audio
 from tkinter.messagebox import showinfo
 from datetime import datetime
@@ -19,77 +18,62 @@ ctk.deactivate_automatic_dpi_awareness()
 def callback(url):
     webbrowser.open_new(url)
 
-rootwindow = Tk()
-#rootwindow.geometry('480x700')
-#rootwindow.state('zoom')
-rootwindow.resizable(FALSE,FALSE)
-rootwindow.title("PST Booking System")#set the name of the window
-rootwindow.iconbitmap('Images/logo.ico')
-#all frames
-choseframe = Frame(rootwindow)
-studentsigninframe = Frame(rootwindow)
-teachersigninframe = Frame(rootwindow)
-parentbookingframe = Frame(rootwindow)
-teacherbookedframe = Frame(rootwindow)
 
-'''
-def toteacher():
-    teacherframe.pack(fill='both', expand=1)
-    studentframe.forget()
 
-def tostudent():
-    studentframe.pack(fill='both', expand=1)
-    teacherframe.forget()
-
-studentframe.pack(fill='both', expand=1)
-
-lbl = Label(studentframe, text="HEllo WORLD")
-lbl.place(x=10,y=10)
-
-lbl1 = Label(teacherframe, text="HIIII")
-lbl1.pack()
-
-btn = Button(studentframe, text="TOUCH ME", command=toteacher)
-btn.pack()
-
-btn2 = Button(teacherframe, text="TAKE ME BACK", command=tostudent)
-btn2.pack()
-
-'''
 
 
 
 #Function to generate window to choose which log in you want wheater thats to log in as a parent or to log in as a teacher
 def chose_login():
-    rootwindow.geometry("480x480")#set the winow size
-    choseframe.pack(fill='both', expand=1)
-
+    win = ctk.CTk()
+    win.geometry("480x500")#set the winow size
+    win.title("PST Log In")#set the name of the window
+    win.iconbitmap('Images/logo.ico') #load school logo up as the famicon icon that is in the top left of the application
+    win.resizable(0,0)
+    def themed():
+        if themeswitch.get() == 1:
+            ctk.set_appearance_mode("Dark")
+            themeswitch.configure(text="🌙")
+        if themeswitch.get() == 0:
+            ctk.set_appearance_mode("Light")
+            themeswitch.configure(text="☀️")
+    themeswitch = ctk.CTkSwitch(win,text="☀️",command=themed)
+    themeswitch.place(x=5,y=5)
 
     #Create canvas for the background image
-    #background = ctk.CTkCanvas(choseframe)
-    #background.pack(expand=YES, fill=BOTH)
+    background = ctk.CTkCanvas(win)
+    background.pack(expand=YES, fill=BOTH)
 
     #open image and set it to be the background image by adding it to the canvas
-    #image1 = Image.open('Images/choose_login.png')
-    img = ImageTk.PhotoImage(Image.open('Images/choose_login.png'))
-    image = ctk.CTkLabel(choseframe, image=img,text="",anchor="center")
-    image.place(x=0,y=-24)
-    #background.create_image(-4,-2, image=img, anchor=NW)
+    img = PhotoImage(file='Images/choose_login.png')
+
+    background.create_image(-4,-2, image=img, anchor=NW)
     #Create buttons to select which mode you would like to log in as
-    student = ctk.CTkButton(choseframe, text="Parent ", font=("Straight",20),command=lambda:student_sign_in())
-    teacher = ctk.CTkButton(choseframe, text="Teacher", font=("Straight",20),command=lambda:teacher_sign_in())
+    student = ctk.CTkButton(win, text="Parent ", font=("Straight",20),command=lambda:student_sign_in(win))
+    teacher = ctk.CTkButton(win, text="Teacher", font=("Straight",20),command=lambda:teacher_sign_in(win))
     student.place(x=85,y=380)
     teacher.place(x=250,y=380)
+    win.mainloop()
 #userpass is a dictionary that is defined but is empty at this stage as it is used latter during the linear search
 userpass = {}
 
 #Sign in for students/ Parents after they select the Parent button on the selection window
-def student_sign_in():
-
-    rootwindow.geometry("480x720")
-    studentsigninframe.pack(fill='both', expand=1)
-    choseframe.forget()
-
+def student_sign_in(win):
+    win.destroy()
+    def themed():
+        if themeswitch.get() == 1:
+            ctk.set_appearance_mode("Dark")
+            themeswitch.configure(text="🌙")
+        if themeswitch.get() == 0:
+            ctk.set_appearance_mode("Light")
+            themeswitch.configure(text="☀️")
+    wins = ctk.CTk()
+    wins.geometry("480x700")
+    wins.title("PST Log In - Parent")
+    wins.iconbitmap('Images/logo.ico')
+    wins.resizable(0,0)
+    themeswitch = ctk.CTkSwitch(wins,text="☀️",command=themed)
+    themeswitch.place(x=5,y=5)
     #Linear search to access student / parental usernames and passwords
     with open("csv//student_userpass.csv") as csvfile:
 
@@ -109,61 +93,75 @@ def student_sign_in():
         pasw = passw.get()
 
         if userpass.get(user) == pasw:
-            parent_booking_screen()#If password is correct and matches the username that it is assigned to in the csv it will then open that booking screen
+            parent_booking_screen(wins)#If password is correct and matches the username that it is assigned to in the csv it will then open that booking screen
         else:
             CTkMessagebox(title='Log In Error', message= 'Incorrect Username or Password', icon="cancel")
 
 
     
+    def show_pass():
+        if passw.cget('show') == '*':
+            passw.configure(show='')
+        else:
+            passw.configure(show='*')
 
 
-
-    studentsigninframe.config(background="white")
-
-    img = ImageTk.PhotoImage(Image.open('Images/login.png'))
-    image = ctk.CTkLabel(studentsigninframe, image=img,text="",anchor="center")
-    image.pack(anchor="center")
+    background = ctk.CTkCanvas(wins)
+    background.pack(expand=YES, fill=BOTH)
 
 
+    img = PhotoImage(file='Images/login.png')
 
-    username = ctk.CTkEntry(studentsigninframe,height=65,width=400,bg_color="white",fg_color="white",font=("Arial",25),placeholder_text="ABC0000")
-    username.place(x=41,y=348)
+    background.create_image(-4,-2, image=img, anchor=NW)
 
-    passw = ctk.CTkEntry(studentsigninframe,height=65,width=364,bg_color="white",fg_color="white",font=("Arial",25),placeholder_text="Password",show="•")
-    passw.place(x=41,y=481)
+    username = ctk.CTkEntry(wins,height=65,width=400,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Username")
+    username.place(x=45,y=385)
+
+    passw = ctk.CTkEntry(wins,height=65,width=364,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Password",show="*")
+    passw.place(x=45,y=518)
     passw.bind("<Return>", lambda e: clicked())
     def show_pass():
-        if passw.cget('show') == '•':
+        if passw.cget('show') == '*':
             passw.configure(show='')
             showpas.configure(image=open_eye)
         else:
-            passw.configure(show='•')
+            passw.configure(show='*')
             showpas.configure(image=closed_eye)
     open_eye = ctk.CTkImage(Image.open("Images/show_eye.png"))
     closed_eye = ctk.CTkImage(Image.open("Images/hide_eye.png"))
     
-    signin = ctk.CTkButton(studentsigninframe, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
-    signin.place(x=41,y=570)
-    showpas = ctk.CTkButton(master=studentsigninframe,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
-    showpas.place(x=405,y=481)
+    signin = ctk.CTkButton(wins, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
+    signin.place(x=45,y=600)
+    showpas = ctk.CTkButton(master=wins,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
+    showpas.place(x=410,y=518)
 
     
 
-    link = ctk.CTkLabel(studentsigninframe, text="Contact School",text_color="blue", font= ('Arial',15,"underline"), cursor="hand2",bg_color="white",fg_color="white")
+    link = ctk.CTkLabel(wins, text="Contact School",text_color="blue", font= ('Arial',15,"underline"), cursor="hand2",bg_color="white",fg_color="white")
     link.place(x=50,y=645)
     link.bind("<Button-1>", lambda e: callback("https://www.gwsc.vic.edu.au/page/186/Contact-Us"))
 
 
 
 
+    wins.mainloop()
 
-def teacher_sign_in():
-   
-    teachersigninframe.pack(fill='both', expand=1)
-    choseframe.forget()
-    rootwindow.geometry("480x720")
-    rootwindow.title("PST Booking System - Teacher Log In")
-  
+def teacher_sign_in(win):
+    win.destroy()
+    def themed():
+        if themeswitch.get() == 1:
+            ctk.set_appearance_mode("Dark")
+            themeswitch.configure(text="🌙")
+        if themeswitch.get() == 0:
+            ctk.set_appearance_mode("Light")
+            themeswitch.configure(text="☀️")
+    wint = ctk.CTk()
+    wint.geometry("480x700")
+    wint.title("PST Log In - Teacher")
+    wint.iconbitmap('Images/logo.ico')
+    wint.resizable(0,0)
+    themeswitch = ctk.CTkSwitch(wint,text="☀️",command=themed)
+    themeswitch.place(x=5,y=5)
 
     with open("csv//teacher_userpass.csv") as csvfile:
 
@@ -184,84 +182,96 @@ def teacher_sign_in():
         pasw = passw.get()
 
         if userpass.get(user) == pasw:
-            teacher_booked_screen()
+            teacher_booked_screen(wint)
         else:
             CTkMessagebox(title='Log In Error', message= 'Incorrect Username or Password', icon="cancel")
 
 
 
-
-
     def show_pass():
-        if passw.cget('show') == '•':
+        if passw.cget('show') == '*':
             passw.configure(show='')
         else:
-            passw.configure(show='•')
-
-    teachersigninframe.config(background="white")
-
-    img = ImageTk.PhotoImage(Image.open('Images/login.png'))
-    image = ctk.CTkLabel(teachersigninframe, image=img,text="",anchor="center")
-    image.pack(anchor="center")
+            passw.configure(show='*')
 
 
-    username = ctk.CTkEntry(teachersigninframe,height=65,width=400,bg_color="white",fg_color="white",font=("Arial",25),placeholder_text="AAA")
-    username.place(x=41,y=348)
+    def show_pass():
+        if passw.cget('show') == '*':
+            passw.configure(show='')
+        else:
+            passw.configure(show='*')
 
-    passw = ctk.CTkEntry(teachersigninframe,height=65,width=364,bg_color="white",fg_color="white",font=("Arial",25),placeholder_text="Password",show="•")
-    passw.place(x=41,y=481)
+
+    background = ctk.CTkCanvas(wint)
+    background.pack(expand=YES, fill=BOTH)
+
+
+    img = PhotoImage(file='Images/login.png')
+
+    background.create_image(-4,-2, image=img, anchor=NW)
+
+    username = ctk.CTkEntry(wint,height=65,width=400,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Username")
+    username.place(x=45,y=385)
+
+    passw = ctk.CTkEntry(wint,height=65,width=364,bg_color="white",fg_color="white",font=("Arial",20),placeholder_text="Password",show="*")
+    passw.place(x=45,y=518)
     passw.bind("<Return>", lambda e: clicked())
     def show_pass():
-        if passw.cget('show') == '•':
+        if passw.cget('show') == '*':
             passw.configure(show='')
             showpas.configure(image=open_eye)
         else:
-            passw.configure(show='•')
+            passw.configure(show='*')
             showpas.configure(image=closed_eye)
     open_eye = ctk.CTkImage(Image.open("Images/show_eye.png"))
     closed_eye = ctk.CTkImage(Image.open("Images/hide_eye.png"))
     
-    signin = ctk.CTkButton(teachersigninframe, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
-    signin.place(x=41,y=570)
-    showpas = ctk.CTkButton(master=teachersigninframe,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
-    showpas.place(x=405,y=481)
+    signin = ctk.CTkButton(wint, text="Sign In",width=400,height=45,bg_color="white",fg_color="#0e6cd9",hover_color="#0e6cd9",text_color="white",font=("Arial",20,"bold"),cursor="hand2",command=clicked)
+    signin.place(x=45,y=600)
+    showpas = ctk.CTkButton(master=wint,text="",height=65,width=14,image=closed_eye, command=show_pass,bg_color="white",fg_color="transparent",hover_color="white")
+    showpas.place(x=410,y=518)
 
     
 
-    link = ctk.CTkLabel(teachersigninframe, text="Contact School",text_color="blue", font= ('Arial',15,"underline"), cursor="hand2",bg_color="white",fg_color="white")
+    link = ctk.CTkLabel(wint, text="Contact School",text_color="blue", font= ('Arial',15,"underline"), cursor="hand2",bg_color="white",fg_color="white")
     link.place(x=50,y=645)
     link.bind("<Button-1>", lambda e: callback("https://www.gwsc.vic.edu.au/page/186/Contact-Us"))
 
 
 
+    wint.mainloop()
 
-def parent_booking_screen():
-    parentbookingframe.pack(fill='both', expand=1)
-    studentsigninframe.forget()
-    rootwindow.geometry("600x400")
+def parent_booking_screen(wins):
+    wins.destroy()
+    winbooking = ctk.CTk()
+    winbooking.iconbitmap('Images/logo.ico')
+    winbooking.title("PST Parent Booking")
+    winbooking.geometry("600x400")
     def combobox_callback(choice):
         if choice == "CHILDREN":
             CTkMessagebox(title='The goblin of GWSC', message= f'I hear you want to see your children again')
         elif choice == "BOOKINGS":
             CTkMessagebox(title='The Bookings of GWSC', message= f'You should remember your bookings not make me tell you')
         elif choice == "LOG OUT":
-            student_sign_in()
-        elif choice == "EXIT":
-            rootwindow.destroy()
+            winbooking.destroy()
         else:
             CTkMessagebox(title='You are already on your account', message= f'Account already opened')
-    combobox = ctk.CTkOptionMenu(parentbookingframe, values=["NAME", "BOOKINGS","CHILDREN","LOG OUT","EXIT"],command=combobox_callback,state="readonly")
+    combobox = ctk.CTkOptionMenu(winbooking, values=["NAME", "BOOKINGS","CHILDREN","LOG OUT"],command=combobox_callback,state="readonly")
     combobox.set("NAME")
     combobox.place(x=460,y=5)
     
 
 
+    winbooking.mainloop()
 
-def teacher_booked_screen():
-    teacherbookedframe.pack(fill='both', expand=1)
-    teachersigninframe.forget()
-    rootwindow.geometry("815x240")
-    sidebar = ctk.CTkFrame(teacherbookedframe,width=200, height=400 )
+def teacher_booked_screen(wint):
+    wint.destroy()
+    winbooked = ctk.CTk()
+    winbooked.resizable(0,0)
+    winbooked.title("All bookings")
+    winbooked.iconbitmap('Images/logo.ico')
+    winbooked.geometry("815x240")
+    sidebar = ctk.CTkFrame(winbooked,width=200, height=400 )
     sidebar.place(x=624,y=-4)
     def file1():
         file = filedialog.asksaveasfile(initialdir="Desktop",initialfile="PSTbookings.csv",defaultextension=".csv",filetypes = [("Excel Files", "*.xls *.csv")])
@@ -278,18 +288,15 @@ def teacher_booked_screen():
     downloadbtn.place(x=20,y=80)
     symbollbl = ctk.CTkLabel(sidebar,text="⇩",bg_color="#3b8ed0",text_color="white",font=("Arial",32))
     symbollbl.place(x=27,y=80)
-    treeviewbookings = ttk.Treeview(teacherbookedframe,columns=("student_name","booking_time","subject"),show="headings")
+    treeviewbookings = ttk.Treeview(winbooked,columns=("student_name","booking_time","subject"),show="headings")
     treeviewbookings.heading("student_name",text="Student Name")
     treeviewbookings.heading("booking_time",text="Time Booked")
     treeviewbookings.heading("subject",text="Subject")
     treeviewbookings.place(x=5,y=5)
     #logout = ctk.CTkButton(sidebar,text="Log Out",fg_color="red",hover_color="red",width=15, font=("Arial",15,"bold"),cursor="hand2",command= lambda:backtoteacherlogin(winbooked))
     #logout.place(x=100,y=210)
-    ctk_textbox_scrollbar = ctk.CTkScrollbar(teacherbookedframe, command=treeviewbookings.yview)
+    ctk_textbox_scrollbar = ctk.CTkScrollbar(winbooked, command=treeviewbookings.yview)
     ctk_textbox_scrollbar.place(x=608,y=25)
-    logouticon = ctk.CTkImage(Image.open("Images/logout.png"))
-    logoutbtn = ctk.CTkButton(sidebar, text="Logout",image=logouticon,fg_color="red",hover_color="red",cursor="hand2",command=lambda: teacher_sign_in())
-    logoutbtn.place(x=45,y=210)
 
 # connect textbox scroll event to CTk scrollbar
     treeviewbookings.configure(yscrollcommand=ctk_textbox_scrollbar.set)
@@ -341,6 +348,6 @@ def teacher_booked_screen():
 
 
     treeviewbookings.bind('<<TreeviewSelect>>', item_selected)
+    winbooked.mainloop()
 #call the window to chose login mode
 chose_login()
-rootwindow.mainloop()
