@@ -10,6 +10,7 @@ from PIL import Image
 from PIL import ImageTk
 from winotify import Notification, audio
 from tkinter.messagebox import showinfo
+import datetime
 from datetime import datetime
 #Set basic customtkinter atributes
 ctk.set_appearance_mode("Light")
@@ -281,9 +282,13 @@ def teacher_booked_screen():
     rootwindow.geometry("815x240")
     sidebar = ctk.CTkFrame(teacherbookedframe,width=200, height=400 )
     sidebar.place(x=624,y=-4)
+
+    year = datetime.now().strftime("%y")
+    year = str(year)
+    filename = "PSTbookings_"+year+".csv"
     def file1():
-        file = filedialog.asksaveasfile(initialdir="Desktop",initialfile="PSTbookings.csv",defaultextension=".csv",filetypes = [("Excel Files", "*.xls *.csv")])
-        insidefile = open("csv/teacherallbooking.csv")
+        file = filedialog.asksaveasfile(initialdir="Desktop",initialfile=filename,defaultextension=".csv",filetypes = [("Excel Files", "*.xls *.csv")])
+        insidefile = open("csv/sortedallbookings.csv")
         text=insidefile.read()
         file.write(text)
         file.close
@@ -291,11 +296,10 @@ def teacher_booked_screen():
         toast.set_audio(audio.Default ,loop=False)
         toast.show()
         
-
-    downloadbtn = ctk.CTkButton(sidebar, text="   Download", font=("Arial",25,"bold"),command=file1)
+    filedownloadicon = ctk.CTkImage(Image.open("Images/filedownload2.png"))
+    downloadbtn = ctk.CTkButton(sidebar, text="Download",image=filedownloadicon, font=("Arial",25,"bold"),command=file1)
     downloadbtn.place(x=20,y=80)
-    symbollbl = ctk.CTkLabel(sidebar,text="⇩",bg_color="#3b8ed0",text_color="white",font=("Arial",32))
-    symbollbl.place(x=27,y=80)
+
     treeviewbookings = ttk.Treeview(teacherbookedframe,columns=("student_name","booking_time","subject"),show="headings")
     treeviewbookings.heading("student_name",text="Student Name")
     treeviewbookings.heading("booking_time",text="Time Booked")
@@ -306,8 +310,8 @@ def teacher_booked_screen():
     ctk_textbox_scrollbar = ctk.CTkScrollbar(teacherbookedframe, command=treeviewbookings.yview)
     ctk_textbox_scrollbar.place(x=608,y=25)
     logouticon = ctk.CTkImage(Image.open("Images/logout.png"))
-    logoutbtn = ctk.CTkButton(sidebar, text="Logout",image=logouticon,fg_color="red",hover_color="red",cursor="hand2",command=exitteacherview)
-    logoutbtn.place(x=45,y=210)
+    logoutbtn = ctk.CTkButton(sidebar, text="Logout",width=15,image=logouticon,fg_color="red",hover_color="red",cursor="hand2",command=exitteacherview)
+    logoutbtn.place(x=90,y=210)
 
 # connect textbox scroll event to CTk scrollbar
     treeviewbookings.configure(yscrollcommand=ctk_textbox_scrollbar.set)
@@ -341,7 +345,7 @@ def teacher_booked_screen():
     size = len(data)
     selectionSort(data, size)
     
-
+    csvfile2 = open("csv/sortedallbookings.csv","w")
 # add data to the treeview
     for i in range(len(data)):
         sname = data[i][0]
@@ -350,6 +354,7 @@ def teacher_booked_screen():
         dateTime = datetime.strptime(stime, '%H:%M')
         timein12 = dateTime.strftime('%I:%M %p').lstrip('0')      
         treeviewbookings.insert('', END, values=(sname, timein12, ssubject))
+        csvfile2.write(sname+", "+timein12+", "+ssubject+"\n")
     def item_selected(event):
         for selected_item in treeviewbookings.selection():
             item = treeviewbookings.item(selected_item)
