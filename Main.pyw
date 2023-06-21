@@ -296,7 +296,7 @@ def teacher_booked_screen():
         toast.set_audio(audio.Default ,loop=False)
         toast.show()
         
-    filedownloadicon = ctk.CTkImage(Image.open("Images/filedownload2.png"))
+    filedownloadicon = ctk.CTkImage(Image.open("Images/filedownload.png"))
     downloadbtn = ctk.CTkButton(sidebar, text="Download",image=filedownloadicon, font=("Arial",25,"bold"),command=file1)
     downloadbtn.place(x=20,y=80)
 
