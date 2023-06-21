@@ -21,8 +21,7 @@ def callback(url):
     webbrowser.open_new(url)
 
 rootwindow = Tk()
-#rootwindow.geometry('480x700')
-#rootwindow.state('zoom')
+
 rootwindow.resizable(FALSE,FALSE)
 rootwindow.title("PST Booking System")#set the name of the window
 rootwindow.iconbitmap('Images/logo.ico')
@@ -64,7 +63,7 @@ btn2.pack()
 def chose_login():
     rootwindow.geometry("480x480")#set the winow size
     choseframe.pack(fill='both', expand=1)
-
+    rootwindow.title("PST Booking System")
 
     #Create canvas for the background image
     #background = ctk.CTkCanvas(choseframe)
@@ -96,6 +95,7 @@ def student_sign_in():
     rootwindow.geometry("480x720")
     studentsigninframe.pack(fill='both', expand=1)
     choseframe.forget()
+    rootwindow.title("PST Booking System - Parent Log In")
 
     #Linear search to access student / parental usernames and passwords
     with open("csv//student_userpass.csv") as csvfile:
@@ -249,12 +249,14 @@ def teacher_sign_in():
 
 def exitparentview():
     parentbookingframe.forget()
+    rootwindow.title("PST Booking System")
     student_sign_in()
 
 
 def parent_booking_screen():
     parentbookingframe.pack(fill='both', expand=1)
     studentsigninframe.forget()
+    rootwindow.title("PST Booking System - Parent Booking Screen")
     rootwindow.geometry("600x400")
     def combobox_callback(choice):
         if choice == "CHILDREN":
@@ -273,6 +275,7 @@ def parent_booking_screen():
     
 def exitteacherview():
     teacherbookedframe.forget()
+    rootwindow.title("PST Booking System")
     teacher_sign_in()
 
 
@@ -280,9 +283,9 @@ def teacher_booked_screen():
     teacherbookedframe.pack(fill='both', expand=1)
     teachersigninframe.forget()
     rootwindow.geometry("815x240")
+    rootwindow.title("PST Booking System - Teacher All Bookings")
     sidebar = ctk.CTkFrame(teacherbookedframe,width=200, height=400 )
     sidebar.place(x=624,y=-4)
-
     year = datetime.now().strftime("%y")
     year = str(year)
     filename = "PSTbookings_"+year+".csv"
@@ -305,8 +308,6 @@ def teacher_booked_screen():
     treeviewbookings.heading("booking_time",text="Time Booked")
     treeviewbookings.heading("subject",text="Subject")
     treeviewbookings.place(x=5,y=5)
-    #logout = ctk.CTkButton(sidebar,text="Log Out",fg_color="red",hover_color="red",width=15, font=("Arial",15,"bold"),cursor="hand2",command= lambda:backtoteacherlogin(winbooked))
-    #logout.place(x=100,y=210)
     ctk_textbox_scrollbar = ctk.CTkScrollbar(teacherbookedframe, command=treeviewbookings.yview)
     ctk_textbox_scrollbar.place(x=608,y=25)
     logouticon = ctk.CTkImage(Image.open("Images/logout.png"))
